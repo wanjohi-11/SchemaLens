@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="SchemaLens is a lightweight browser-based SQL schema inspector for developers, students and vibe coders." />
+  <title>SchemaLens — Inspect SQL schemas fast</title>
+  <link rel="canonical" href="https://schemalens.valron.co.ke/" />
+  <meta property="og:title" content="SchemaLens — Inspect SQL schemas fast" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://schemalens.valron.co.ke/" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="SchemaLens home">
+        <span class="brand-mark">SL</span>
+        <span><strong>SchemaLens</strong><small>by Valron Labs</small></span>
+      </a>
+      <nav>
+        <a href="#workspace">Analyzer</a>
+        <a href="#checks">Checks</a>
+        <a href="#deploy">Deploy</a>
+        <a class="ghost" href="https://github.com/wanjohi-11" target="_blank" rel="noreferrer">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">DATABASE SCHEMA INSPECTOR</span>
+          <h1>See what your SQL schema is <em>actually</em> doing.</h1>
+          <p>Paste or load a SQL schema and get an instant structural readout: tables, keys, relationships, indexes and common design risks. Everything runs locally in your browser.</p>
+          <div class="hero-actions">
+            <a class="primary" href="#workspace">Analyze a schema</a>
+            <button class="secondary" id="loadSampleTop">Load sample</button>
+          </div>
+          <div class="trust-row">
+            <span>✓ No API keys</span><span>✓ No database connection</span><span>✓ Local-only analysis</span>
+          </div>
+        </div>
+        <div class="hero-panel" aria-hidden="true">
+          <div class="mini-head"><span></span><span></span><span></span><b>schema.sql</b></div>
+          <pre><code><span class="muted">CREATE TABLE</span> orders (
+  id BIGINT <span class="accent">PRIMARY KEY</span>,
+  customer_id BIGINT,
+  total DECIMAL(12,2),
+  created_at TIMESTAMP,
+  <span class="accent2">FOREIGN KEY</span> (customer_id)
+    REFERENCES customers(id)
+);</code></pre>
+          <div class="signal"><b>5</b><span>tables</span><b>4</b><span>relations</span><b class="warn">3</b><span>review items</span></div>
+        </div>
+      </section>
+
+      <section class="workspace" id="workspace">
+        <div class="section-head">
+          <div><span class="eyebrow">WORKSPACE</span><h2>Inspect a schema</h2></div>
+          <div class="privacy-pill">Analysis stays in this tab</div>
+        </div>
+
+        <div class="input-grid">
+          <div class="panel editor-panel">
+            <div class="panel-head">
+              <div><strong>SQL input</strong><small>CREATE TABLE statements work best</small></div>
+              <div class="button-row"><button id="clearSql" class="tiny">Clear</button><button id="loadSample" class="tiny active">Sample</button></div>
+            </div>
+            <textarea id="sqlInput" spellcheck="false" aria-label="SQL schema input"></textarea>
+            <div class="panel-foot">
+              <label class="file-label">Open .sql file<input type="file" id="sqlFile" accept=".sql,.txt" hidden /></label>
+              <button class="primary small" id="analyzeBtn">Run analysis</button>
+            </div>
+          </div>
+
+          <div class="panel score-panel">
+            <div class="panel-head"><div><strong>Schema score</strong><small>Heuristic design review</small></div><span id="scoreLabel" class="score-label">Ready</span></div>
+            <div class="score-wrap"><div class="score-ring" id="scoreRing"><span id="scoreValue">—</span></div><div><h3 id="scoreTitle">Load a schema</h3><p id="scoreText">SchemaLens will summarize structure and flag patterns worth reviewing.</p></div></div>
+            <div class="score-meta"><span><b id="tableCount">0</b> Tables</span><span><b id="relationCount">0</b> Relations</span><span><b id="indexCount">0</b> Indexes</span><span><b id="issueCount">0</b> Findings</span></div>
+          </div>
+        </div>
+
+        <div class="results-grid">
+          <div class="panel span-2">
+            <div class="panel-head"><div><strong>Table map</strong><small>Detected columns, keys and relationships</small></div></div>
+            <div id="tableMap" class="table-map empty-state">Run an analysis to populate the schema map.</div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div><strong>Findings</strong><small>Practical review prompts, not absolute rules</small></div><button class="tiny" id="exportReport">Export JSON</button></div>
+            <div id="findings" class="findings empty-state">No findings yet.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="features" id="checks">
+        <div class="section-head"><div><span class="eyebrow">WHAT IT CHECKS</span><h2>Useful signals before you ship</h2></div></div>
+        <div class="feature-grid">
+          <article><span>01</span><h3>Structure</h3><p>Counts tables and columns, identifies primary keys, unique constraints and foreign-key relationships.</p></article>
+          <article><span>02</span><h3>Index hygiene</h3><p>Highlights foreign-key columns that do not appear to have explicit indexes in the supplied schema.</p></article>
+          <article><span>03</span><h3>Type review</h3><p>Surfaces risky heuristics such as money stored in floating types, very wide text fields, or suspicious generic IDs.</p></article>
+          <article><span>04</span><h3>Relationship clarity</h3><p>Shows each detected relationship in a compact map so teams can understand a schema without opening a DB client.</p></article>
+        </div>
+      </section>
+
+      <section class="deploy" id="deploy">
+        <div>
+          <span class="eyebrow">ZERO-BUILD DEPLOYMENT</span>
+          <h2>Built for shared hosting, GitHub Pages or any static host.</h2>
+          <p>There is no backend and no dependency install. Upload the folder contents to the document root for <code>schemalens.valron.co.ke</code>, then point the subdomain to that directory.</p>
+        </div>
+        <ol>
+          <li><b>Create the subdomain.</b><span>Use <code>schemalens.valron.co.ke</code> in cPanel or your DNS/hosting control panel.</span></li>
+          <li><b>Upload the project.</b><span>Place <code>index.html</code> and the <code>assets</code> folder in the subdomain document root.</span></li>
+          <li><b>Enable HTTPS.</b><span>Issue or renew the SSL certificate, then force HTTPS at hosting level if available.</span></li>
+          <li><b>Publish the repo.</b><span>Commit the same files to GitHub. No secrets or environment variables are required.</span></li>
+        </ol>
+      </section>
+    </main>
+
+    <footer><span>SchemaLens · Valron Labs</span><span>Open demo utility for schema review</span></footer>
+  </div>
+  <script src="assets/app.js"></script>
+</body>
+</html>
